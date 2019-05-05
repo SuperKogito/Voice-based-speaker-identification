@@ -31,10 +31,6 @@ A Gaussian Mixture Model (GMM) is a parametric probability density function repr
 This script require the follwing modules/libraries:
 * [numpy](http://www.numpy.org/) & [scipy](https://www.scipy.org/) & [scikit-learn](https://scikit-learn.org/stable/) & [python_speech_features](https://github.com/jameslyons/python_speech_features)
 
-Libs can be installed as follows:
-```
-pip install -r requirements.txt
-```
 ## Code & scripts
 - [Run.py](Run.py) : This is the main script and it will run the whole cycle (Data management > Models training > Speakers identification)
 - [DataManager.py](Code/DataManager.py): This script is responsible for the extracting and strcturing the data.
