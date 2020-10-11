@@ -2,8 +2,8 @@ import os
 import pickle
 import warnings
 import numpy as np
-from SilenceEliminator import SilenceEliminator
 from FeaturesExtractor import FeaturesExtractor
+import scipy.io.wavfile
 
 warnings.filterwarnings("ignore")
 
@@ -32,11 +32,9 @@ print("+=======================================================+")
 for path in file_paths[:]:
     if os.path.basename(path).split('_')[0] in db.keys():
         features_extractor = FeaturesExtractor()
-        silence_eliminator = SilenceEliminator()
 
-        silence_eliminated_wave_file_path ="temp-" + os.path.basename(path).split('.')[0] + ".wav"
-        audio, duration_string = silence_eliminator.ffmpeg_silence_eliminator(path, silence_eliminated_wave_file_path)
-        vector                 = features_extractor.accelerated_get_features_vector(path, audio, 8000)
+        sample_rate, signal = scipy.io.wavfile.read(path)
+        vector                 = features_extractor.accelerated_get_features_vector(path, signal, 8000)
 
         if vector.shape != (0,):
             print(vector.shape)

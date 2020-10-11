@@ -2,9 +2,9 @@ import os
 import pickle
 import warnings
 import numpy as np
-from sklearn.mixture import GMM
+from sklearn.mixture import GaussianMixture as GMM
 from FeaturesExtractor import FeaturesExtractor
-from SilenceEliminator import SilenceEliminator
+import scipy.io.wavfile
 
 warnings.filterwarnings("ignore")
 
@@ -34,12 +34,10 @@ for files in file_paths:
 
         # extract voice features
         features_extractor = FeaturesExtractor()
-        silence_eliminator = SilenceEliminator()
 
         try   :
-            silence_eliminated_wave_file_path = "temp-" + os.path.basename(filepath).split('.')[0] + ".wav"
-            audio, duration_string = silence_eliminator.ffmpeg_silence_eliminator(filepath, silence_eliminated_wave_file_path)
-            vector                 = features_extractor.accelerated_get_features_vector(filepath, audio, 8000)
+            sample_rate, signal = scipy.io.wavfile.read(filepath)
+            vector                 = features_extractor.accelerated_get_features_vector(filepath, signal, 8000)
         except:
             continue
 
@@ -52,7 +50,7 @@ for files in file_paths:
                 print("ValueError: Shape mismatch")
 
     # adapt gmm
-    gmm = GMM(n_components = 16, n_iter = 200, covariance_type='diag', n_init = 3)
+    gmm = GMM(n_components = 16, covariance_type='diag', n_init = 3)
     gmm.fit(features)
 
     # dumping the trained gaussian model
