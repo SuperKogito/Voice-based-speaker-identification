@@ -4,7 +4,7 @@ import warnings
 import numpy as np
 from sklearn.mixture import GaussianMixture as GMM
 from FeaturesExtractor import FeaturesExtractor
-import scipy.io.wavfile
+from SilenceEliminator import SilenceEliminator
 
 warnings.filterwarnings("ignore")
 
@@ -34,10 +34,12 @@ for files in file_paths:
 
         # extract voice features
         features_extractor = FeaturesExtractor()
+        silence_eliminator = SilenceEliminator()
 
         try   :
-            sample_rate, signal = scipy.io.wavfile.read(filepath)
-            vector                 = features_extractor.accelerated_get_features_vector(filepath, signal, 8000)
+            silence_eliminated_wave_file_path = "temp-" + os.path.basename(filepath).split('.')[0] + ".wav"
+            audio, duration_string = silence_eliminator.ffmpeg_silence_eliminator(filepath, silence_eliminated_wave_file_path)
+            vector                 = features_extractor.accelerated_get_features_vector(filepath, audio, 8000)
         except:
             continue
 

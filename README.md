@@ -42,9 +42,3 @@ This script require the follwing modules/libraries:
 ## Results and disscussion
 - The code can be further optimized using multi-threading, acceleration libs and multi-processing.
 - The accuracy can be further improved using GMM normalization aka a UBM-GMM system.
-
-## Update
-- Eliminated the use of SilenceEliminator
-- Achieved an accuracy of 98.21%
-- Fixed the import of GMM in FeaturesExtractor
-- Updated file_read in ModelsTrainer
