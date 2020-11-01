@@ -7,6 +7,8 @@ import os
 import subprocess
 import numpy as np
 from subprocess import Popen, PIPE
+import scipy.io.wavfile
+
 
 class SilenceEliminator:
 
@@ -26,8 +28,8 @@ class SilenceEliminator:
                       representing the certainty of the decision.
         """
         # filter silence in mp3 file
-        filter_command = ["ffmpeg", "-i", input_path, "-af", "silenceremove=1:0:0.05:-1:1:-36dB", "-ac", "1", "-ss", "0","-t","90", output_path, "-y"]
-        out = subprocess.Popen(filter_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        filter_command = "ffmpeg -i "+ input_path +" -af silenceremove=1:0:-36dB "+"-ac"+" 1"+" -ss"+" 0"+" -t"+" 90 " + output_path + " -y"
+        out = subprocess.Popen(filter_command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
         out.wait()
 
         with_silence_duration = os.popen("ffprobe -i '" + input_path + "' -show_format -v quiet | sed -n 's/duration=//p'").read()
@@ -41,11 +43,8 @@ class SilenceEliminator:
             print("Cannot convert float to string")
 
         # convert file to wave and read array
-        load_command = ["ffmpeg", "-i", output_path, "-f", "wav", "-" ]
-        p            = Popen(load_command, stdin=PIPE, stdout=PIPE, stderr=PIPE)
-        data         = p.communicate()[0]
-        audio_np     = np.frombuffer(data[data.find(b'\x00data')+ 9:], np.int16)
+        sample_rate, signal = scipy.io.wavfile.read(output_path)
 
         # delete temp silence free file, as we only need the array
         os.remove(output_path)
-        return audio_np, no_silence_duration
+        return signal, no_silence_duration
