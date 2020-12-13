@@ -2,7 +2,7 @@ import os
 import pickle
 import warnings
 import numpy as np
-from sklearn.mixture import GMM
+from sklearn.mixture import GaussianMixture as GMM
 from FeaturesExtractor import FeaturesExtractor
 from SilenceEliminator import SilenceEliminator
 
@@ -52,7 +52,7 @@ for files in file_paths:
                 print("ValueError: Shape mismatch")
 
     # adapt gmm
-    gmm = GMM(n_components = 16, n_iter = 200, covariance_type='diag', n_init = 3)
+    gmm = GMM(n_components = 16, covariance_type='diag', n_init = 3)
     gmm.fit(features)
 
     # dumping the trained gaussian model
